@@ -126,9 +126,18 @@ func QiniuUpload(pboard: NSPasteboard) {
 		QiniuSDKUpload(files.firstObject as? String, data: nil, token: QiniuToken)
 	}
 	
-	guard let data = pboard.pasteboardItems?.first?.dataForType("public.tiff") else {
-		return
-	}
+
+    
+    guard let type = pboard.pasteboardItems?.first?.types.first else {
+        return
+    }
+    
+    guard let data = pboard.pasteboardItems?.first?.dataForType(type) else {
+    	return
+    }
+//	guard let data = pboard.pasteboardItems?.first?.dataForType("public.tiff") else {
+//		return
+//	}
 	guard let _ = NSImage(data: data) else {
 		return
 	}

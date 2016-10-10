@@ -16,7 +16,7 @@ extension NSImage {
 		img.lockFocus()
 		let ctx = NSGraphicsContext.currentContext()
 		ctx?.imageInterpolation = .High
-		self.drawInRect(NSMakeRect(0, 0, width, height), fromRect: NSMakeRect(0, 0, size.width, size.height), operation: .CompositeCopy, fraction: 1)
+		self.drawInRect(NSMakeRect(0, 0, width, height), fromRect: NSMakeRect(0, 0, size.width, size.height), operation: .Copy, fraction: 1)
 		img.unlockFocus()
 		return img
 	}

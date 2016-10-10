@@ -148,7 +148,7 @@ static QNDnsManager *initDns(QNConfigurationBuilder *builder) {
     static QNZone *z0 = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        z0 = [QNZone createWithHost:@"upload.qiniu.com" backupHost:@"up.qiniu.com" ip1:@"183.136.139.10" ip2:@"115.231.182.136"];
+        z0 = [QNZone createWithHost:@"upload-z2.qiniu.com" backupHost:@"up-z2.qiniu.com" ip1:@"14.152.37.6" ip2:@"183.60.214.196"];
     });
     return z0;
 }
