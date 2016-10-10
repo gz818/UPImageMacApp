@@ -131,10 +131,16 @@ func QiniuUpload(pboard: NSPasteboard) {
     guard let type = pboard.pasteboardItems?.first?.types.first else {
         return
     }
-    
-    guard let data = pboard.pasteboardItems?.first?.dataForType(type) else {
-    	return
+    var data:NSData
+    if(["public.tiff","public.png"] contains(type)){
+        data = (pboard.pasteboardItems?.first?.dataForType(type))!
+    }else{
+        return;
     }
+    
+    
+    
+  
 //	guard let data = pboard.pasteboardItems?.first?.dataForType("public.tiff") else {
 //		return
 //	}
