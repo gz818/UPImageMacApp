@@ -11,7 +11,7 @@ https://github.com/chenxtdo/UPImageMacApp
 -----
 # 修改项目（没有技术含量）
 
-1. 支持QQ截图 和 系统截图
+1. 支持QQ截图 和 系统截图（CTRL + CMD + 4）
 2. 七牛修改成只能支持华南地区的存储服务器
 
 # 可能会添加功能（非常低）
