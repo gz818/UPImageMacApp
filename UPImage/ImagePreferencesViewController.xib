@@ -1,7 +1,8 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="10117" systemVersion="15G31" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="11762" systemVersion="16C67" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10117"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="11762"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="ImagePreferencesViewController" customModule="U图床" customModuleProvider="target">
@@ -10,6 +11,7 @@
                 <outlet property="bucketTextField" destination="c7a-xx-UQA" id="Uvu-st-4Z6"/>
                 <outlet property="checkButton" destination="NvL-nQ-2Dg" id="2pR-lt-bFf"/>
                 <outlet property="secretKeyTextField" destination="d0M-S8-UXU" id="aYT-se-wwR"/>
+                <outlet property="segZone" destination="orw-4X-X0B" id="bme-Rs-s51"/>
                 <outlet property="statusLabel" destination="Q0X-Lv-WIr" id="3uZ-XS-Fdo"/>
                 <outlet property="urlPrefixTextField" destination="9QQ-vX-btJ" id="bxk-wi-4sv"/>
                 <outlet property="view" destination="Hz6-mo-xeY" id="0bl-1N-x8E"/>
@@ -21,14 +23,6 @@
             <rect key="frame" x="0.0" y="0.0" width="362" height="474"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <subviews>
-                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="lSv-x0-Xjm">
-                    <rect key="frame" x="132" y="427" width="99" height="17"/>
-                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="目前支持七牛云" id="3Fo-mW-G99">
-                        <font key="font" metaFont="system"/>
-                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                    </textFieldCell>
-                </textField>
                 <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="rjs-X7-kUH">
                     <rect key="frame" x="108" y="385" width="214" height="22"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" usesSingleLineMode="YES" id="IL3-pL-JlS">
@@ -62,7 +56,7 @@
                     </textFieldCell>
                 </textField>
                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="vOc-On-5ul">
-                    <rect key="frame" x="18" y="284" width="69" height="17"/>
+                    <rect key="frame" x="18" y="284" width="71" height="17"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="空间名称：" id="Ldl-T3-tpm">
                         <font key="font" metaFont="system"/>
                         <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -70,8 +64,8 @@
                     </textFieldCell>
                 </textField>
                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="W3O-c8-fDc">
-                    <rect key="frame" x="18" y="232" width="95" height="17"/>
-                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="图片URL前缀：" id="iaz-TX-0l3">
+                    <rect key="frame" x="18" y="232" width="71" height="17"/>
+                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="域名地址：" id="iaz-TX-0l3">
                         <font key="font" metaFont="system"/>
                         <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -94,7 +88,7 @@
                     </textFieldCell>
                 </textField>
                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="NvL-nQ-2Dg">
-                    <rect key="frame" x="58" y="173" width="92" height="32"/>
+                    <rect key="frame" x="57" y="173" width="94" height="32"/>
                     <buttonCell key="cell" type="push" title="验证配置" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="Bip-WS-tbq">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="system"/>
@@ -112,7 +106,7 @@
                     </textFieldCell>
                 </textField>
                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="sDc-Ui-cx9">
-                    <rect key="frame" x="212" y="173" width="92" height="32"/>
+                    <rect key="frame" x="211" y="173" width="94" height="32"/>
                     <buttonCell key="cell" type="push" title="使用默认" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="SOn-Nb-evr">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="system"/>
@@ -122,13 +116,26 @@
                     </connections>
                 </button>
                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Ia4-2v-PGs">
-                    <rect key="frame" x="106" y="210" width="184" height="14"/>
-                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="提示：URL前缀格式为  http://域名/" id="jaw-3R-NxV">
+                    <rect key="frame" x="106" y="210" width="162" height="14"/>
+                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="提示：验证配置不验证域名地址" id="jaw-3R-NxV">
                         <font key="font" metaFont="smallSystem"/>
                         <color key="textColor" red="0.3921568627" green="0.5568627451" blue="0.87058823529999996" alpha="1" colorSpace="calibratedRGB"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
+                <segmentedControl verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="orw-4X-X0B">
+                    <rect key="frame" x="92" y="425" width="178" height="24"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <segmentedCell key="cell" borderStyle="border" alignment="left" style="rounded" trackingMode="selectOne" id="TEM-29-ZTq">
+                        <font key="font" metaFont="system"/>
+                        <segments>
+                            <segment label="华东" width="37"/>
+                            <segment label="华北" width="44" selected="YES" tag="1"/>
+                            <segment label="华南" width="43"/>
+                            <segment label="北美" width="45"/>
+                        </segments>
+                    </segmentedCell>
+                </segmentedControl>
             </subviews>
             <constraints>
                 <constraint firstItem="sDc-Ui-cx9" firstAttribute="top" secondItem="NvL-nQ-2Dg" secondAttribute="top" id="02h-MU-Z6p"/>
@@ -146,7 +153,6 @@
                 <constraint firstItem="NvL-nQ-2Dg" firstAttribute="top" secondItem="c7a-xx-UQA" secondAttribute="bottom" constant="80" id="W4F-Og-4W5"/>
                 <constraint firstItem="spj-8n-oHx" firstAttribute="leading" secondItem="TzW-n7-wGg" secondAttribute="leading" id="WC6-gC-wsG"/>
                 <constraint firstItem="rjs-X7-kUH" firstAttribute="leading" secondItem="TzW-n7-wGg" secondAttribute="trailing" constant="10" id="WZD-Wb-a1p"/>
-                <constraint firstItem="lSv-x0-Xjm" firstAttribute="centerX" secondItem="Hz6-mo-xeY" secondAttribute="centerX" id="WiE-u2-ULB"/>
                 <constraint firstItem="9QQ-vX-btJ" firstAttribute="trailing" secondItem="c7a-xx-UQA" secondAttribute="trailing" id="X8D-v6-9yI"/>
                 <constraint firstItem="d0M-S8-UXU" firstAttribute="centerY" secondItem="spj-8n-oHx" secondAttribute="centerY" id="YzG-Wd-0nk"/>
                 <constraint firstItem="c7a-xx-UQA" firstAttribute="trailing" secondItem="d0M-S8-UXU" secondAttribute="trailing" id="aoQ-0n-DlO"/>
@@ -160,7 +166,6 @@
                 <constraint firstItem="vOc-On-5ul" firstAttribute="leading" secondItem="spj-8n-oHx" secondAttribute="leading" id="wRK-dh-enN"/>
                 <constraint firstItem="c7a-xx-UQA" firstAttribute="centerY" secondItem="vOc-On-5ul" secondAttribute="centerY" id="wfZ-x1-Cq3"/>
                 <constraint firstItem="9QQ-vX-btJ" firstAttribute="centerY" secondItem="W3O-c8-fDc" secondAttribute="centerY" id="x39-6c-jlg"/>
-                <constraint firstItem="lSv-x0-Xjm" firstAttribute="top" secondItem="Hz6-mo-xeY" secondAttribute="top" constant="30" id="xYZ-fp-Pkb"/>
             </constraints>
             <point key="canvasLocation" x="335" y="426"/>
         </customView>

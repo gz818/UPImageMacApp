@@ -11,9 +11,9 @@ import MASPreferences
 import TMCache
 import Carbon
 
-func checkImageFile(pboard: NSPasteboard) -> Bool {
+func checkImageFile(_ pboard: NSPasteboard) -> Bool {
 	
-	let files: NSArray = pboard.propertyListForType(NSFilenamesPboardType) as! NSArray
+	let files: NSArray = pboard.propertyList(forType: NSFilenamesPboardType) as! NSArray
 	let image = NSImage(contentsOfFile: files.firstObject as! String)
 	guard let _ = image else {
 		return false
@@ -23,13 +23,13 @@ func checkImageFile(pboard: NSPasteboard) -> Bool {
 
 var autoUp: Bool {
 	get {
-		if let autoUp = NSUserDefaults.standardUserDefaults().valueForKey("autoUp") {
+		if let autoUp = UserDefaults.standard.value(forKey: "autoUp") {
 			return autoUp as! Bool
 		}
 		return false
 	}
 	set {
-		NSUserDefaults.standardUserDefaults().setValue(newValue, forKey: "autoUp")
+		UserDefaults.standard.setValue(newValue, forKey: "autoUp")
 	}
 }
 
@@ -44,32 +44,34 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	
 	let pasteboardObserver = PasteboardObserver()
 	
-	@IBOutlet weak var MarkdownItem: NSMenuItem!
-	@IBOutlet weak var window: NSWindow!
+	@IBOutlet weak var MarkdownItem: NSMenuItem!//markdown
+	@IBOutlet weak var window: NSWindow!//更新界面
 	
-	@IBOutlet weak var statusMenu: NSMenu!
-	@IBOutlet weak var cacheImageMenu: NSMenu!
+	@IBOutlet weak var statusMenu: NSMenu! // 图标菜单
+	@IBOutlet weak var cacheImageMenu: NSMenu!//历史
 	
-	@IBOutlet weak var autoUpItem: NSMenuItem!
-	@IBOutlet weak var uploadMenuItem: NSMenuItem!
+	@IBOutlet weak var autoUpItem: NSMenuItem!//自动上传
+	@IBOutlet weak var uploadMenuItem: NSMenuItem!//上传
 	
-	@IBOutlet weak var cacheImageMenuItem: NSMenuItem!
+	@IBOutlet weak var cacheImageMenuItem: NSMenuItem!//历史
+    //“设置”界面
 	lazy var preferencesWindowController: NSWindowController = {
 		
-		let imageViewController = ImagePreferencesViewController()
-		let generalViewController = GeneralViewController()
+		let imageViewController = ImagePreferencesViewController()//七牛云设置界面
+		let generalViewController = GeneralViewController()//基本 “捐赠界面”
 		let controllers = [generalViewController, imageViewController]
 		let wc = MASPreferencesWindowController(viewControllers: controllers, title: "设置")
-		imageViewController.window = wc.window
-		return wc
+//        注释掉貌似也没有问题
+		imageViewController.window = wc?.window
+		return wc!
 	}()
-	
-	func applicationDidFinishLaunching(aNotification: NSNotification) {
-		
+	// APP 启动后
+	func applicationDidFinishLaunching(_ aNotification: Notification) {
+		//注册快捷键
 		registerHotKeys()
 		
 		// 重置Token
-		
+//		神马意思
 		if linkType == 0 {
 			MarkdownItem.state = 1
 		} else {
@@ -85,24 +87,25 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 			
 		}
 		
-		NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(notification), name: "MarkdownState", object: nil)
+		NotificationCenter.default.addObserver(self, selector: #selector(notification), name: NSNotification.Name(rawValue: "MarkdownState"), object: nil)
 		
 		window.center()
 		appDelegate = self
-		statusItem = NSStatusBar.systemStatusBar().statusItemWithLength(NSSquareStatusItemLength)
+		statusItem = NSStatusBar.system().statusItem(withLength: NSSquareStatusItemLength)
 		let statusBarButton = DragDestinationView(frame: (statusItem.button?.bounds)!)
-		statusItem.button?.superview?.addSubview(statusBarButton, positioned: .Below, relativeTo: statusItem.button)
+		statusItem.button?.superview?.addSubview(statusBarButton, positioned: .below, relativeTo: statusItem.button)
 		let iconImage = NSImage(named: "StatusIcon")
-		iconImage?.template = true
+		iconImage?.isTemplate = true
 		statusItem.button?.image = iconImage
 		statusItem.button?.action = #selector(showMenu)
 		statusItem.button?.target = self
 		
 	}
 	
-	func notification(notification: NSNotification) {
+	func notification(_ notification: Notification) {
 		
-		if notification.object?.intValue == 0 {
+        
+		if (notification.object as AnyObject).int64Value == 0 {
 			MarkdownItem.state = 1
 		}
 		else {
@@ -111,14 +114,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		
 	}
 	
-	func applicationWillTerminate(aNotification: NSNotification) {
+	func applicationWillTerminate(_ aNotification: Notification) {
 		// Insert code here to tear down your application
 	}
-	
+//	显示菜单
 	func showMenu() {
 		
-		let pboard = NSPasteboard.generalPasteboard()
-		let files: NSArray? = pboard.propertyListForType(NSFilenamesPboardType) as? NSArray
+		let pboard = NSPasteboard.general()
+		let files: NSArray? = pboard.propertyList(forType: NSFilenamesPboardType) as? NSArray
 		
 		if let files = files {
 			let i = NSImage(contentsOfFile: files.firstObject as! String)
@@ -132,38 +135,42 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 			
 		}
 		
-		let object = TMCache.sharedCache().objectForKey("imageCache")
+		let object = TMCache.shared().object(forKey: "imageCache")
 		if let obj = object as? [[String: AnyObject]] {
 			imagesCacheArr = obj
 			
 		}
 		cacheImageMenuItem.submenu = makeCacheImageMenu(imagesCacheArr)
 		
-		statusItem.popUpStatusItemMenu(statusMenu)
+		statusItem.popUpMenu(statusMenu)
 	}
-	
-	@IBAction func statusMenuClicked(sender: NSMenuItem) {
+    
+	// 点击状态栏
+	@IBAction func statusMenuClicked(_ sender: NSMenuItem) {
 		switch sender.tag {
-			// 上传
+			
 		case 1:
-			let pboard = NSPasteboard.generalPasteboard()
+            // 上传
+			let pboard = NSPasteboard.general()
 			QiniuUpload(pboard)
-			// 设置
+			
 		case 2:
+            // 设置
 			preferencesWindowController.showWindow(nil)
 			preferencesWindowController.window?.center()
-			NSApp.activateIgnoringOtherApps(true)
+			NSApp.activate(ignoringOtherApps: true)
 		case 3:
 			// 退出
 			NSApp.terminate(nil)
 			
 		case 4:
-			NSWorkspace.sharedWorkspace().openURL(NSURL(string: "http://lzqup.com")!)
+            //使用说明
+			NSWorkspace.shared().open(URL(string: "http://lzqup.com")!)
 		case 5:
 			break
 			
 		case 6:
-			
+			//自动上传
 			if sender.state == 0 {
 				sender.state = 1
 				pasteboardObserver.startObserving()
@@ -176,17 +183,18 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 			}
 			
 		case 7:
+            //markdown
 			if sender.state == 0 {
 				sender.state = 1
 				linkType = 0
 				guard let imagesCache = imagesCacheArr.first else {
 					return
 				}
-				NSPasteboard.generalPasteboard().clearContents()
+				NSPasteboard.general().clearContents()
 				var picUrl = imagesCache["url"] as! String
 				let fileName = NSString(string: picUrl).lastPathComponent
 				picUrl = "![" + fileName + "](" + picUrl + ")"
-				NSPasteboard.generalPasteboard().setString(picUrl, forType: NSStringPboardType)
+				NSPasteboard.general().setString(picUrl, forType: NSStringPboardType)
 				
 			}
 			else {
@@ -195,9 +203,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 				guard let imagesCache = imagesCacheArr.first else {
 					return
 				}
-				NSPasteboard.generalPasteboard().clearContents()
+				NSPasteboard.general().clearContents()
 				let picUrl = imagesCache["url"] as! String
-				NSPasteboard.generalPasteboard().setString(picUrl, forType: NSStringPboardType)
+				NSPasteboard.general().setString(picUrl, forType: NSStringPboardType)
 				
 			}
 			
@@ -206,11 +214,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		}
 		
 	}
-	
-	@IBAction func btnClick(sender: NSButton) {
+	//有新版本 提示界面 按钮“去下载” “取消”
+	@IBAction func btnClick(_ sender: NSButton) {
 		switch sender.tag {
 		case 1:
-			NSWorkspace.sharedWorkspace().openURL(NSURL(string: "http://blog.lzqup.com/tools/2016/07/10/Tools-UPImage.html")!)
+			NSWorkspace.shared().open(URL(string: "http://blog.lzqup.com/tools/2016/07/10/Tools-UPImage.html")!)
 			self.window.close()
 		case 2:
 			self.window.close()
@@ -220,7 +228,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		}
 	}
 	
-	func makeCacheImageMenu(imagesArr: [[String: AnyObject]]) -> NSMenu {
+    //历史
+	func makeCacheImageMenu(_ imagesArr: [[String: AnyObject]]) -> NSMenu {
 		let menu = NSMenu()
 		if imagesArr.count == 0 {
 			let item = NSMenuItem(title: "没有历史", action: nil, keyEquivalent: "")
@@ -232,16 +241,16 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 				let i = imagesArr[index]["image"] as? NSImage
 				i?.scalingImage()
 				item.image = i
-				menu.insertItem(item, atIndex: 0)
+				menu.insertItem(item, at: 0)
 			}
 		}
 		
 		return menu
 	}
-	
-	func cacheImageClick(sender: NSMenuItem) {
+	//历史- 图片
+	func cacheImageClick(_ sender: NSMenuItem) {
 		
-		NSPasteboard.generalPasteboard().clearContents()
+		NSPasteboard.general().clearContents()
 		
 		var picUrl = imagesCacheArr[sender.tag]["url"] as! String
 		
@@ -251,7 +260,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 			picUrl = "![" + fileName + "](" + picUrl + ")"
 		}
 		
-		NSPasteboard.generalPasteboard().setString(picUrl, forType: NSStringPboardType)
+		NSPasteboard.general().setString(picUrl, forType: NSStringPboardType)
 		NotificationMessage("图片链接获取成功", isSuccess: true)
 		
 	}
@@ -260,24 +269,24 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
 extension AppDelegate: NSUserNotificationCenterDelegate, PasteboardObserverSubscriber {
 	// 强行通知
-	func userNotificationCenter(center: NSUserNotificationCenter, shouldPresentNotification notification: NSUserNotification) -> Bool {
+	func userNotificationCenter(_ center: NSUserNotificationCenter, shouldPresent notification: NSUserNotification) -> Bool {
 		return true
 	}
 	
-	override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String: AnyObject]?, context: UnsafeMutablePointer<Void>) {
+	override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
 		
 		print(change)
 		
 	}
-	
-	func pasteboardChanged(pasteboard: NSPasteboard) {
+	//粘贴板变化
+	func pasteboardChanged(_ pasteboard: NSPasteboard) {
 		QiniuUpload(pasteboard)
 		
 	}
-	
+	//注册快捷键
 	func registerHotKeys() {
 		
-		var gMyHotKeyRef: EventHotKeyRef = nil
+		var gMyHotKeyRef: EventHotKeyRef? = nil
 		var gMyHotKeyIDU = EventHotKeyID()
 		var gMyHotKeyIDM = EventHotKeyID()
 		var eventType = EventTypeSpec()
@@ -296,34 +305,34 @@ extension AppDelegate: NSUserNotificationCenterDelegate, PasteboardObserverSubsc
 		// Install handler.
 		InstallEventHandler(GetApplicationEventTarget(), { (nextHanlder, theEvent, userData) -> OSStatus in
 			var hkCom = EventHotKeyID()
-			GetEventParameter(theEvent, EventParamName(kEventParamDirectObject), EventParamType(typeEventHotKeyID), nil, sizeof(EventHotKeyID), nil, &hkCom)
+			GetEventParameter(theEvent, EventParamName(kEventParamDirectObject), EventParamType(typeEventHotKeyID), nil, MemoryLayout<EventHotKeyID>.size, nil, &hkCom)
 			switch hkCom.id {
 			case UInt32(kVK_ANSI_U):
-				let pboard = NSPasteboard.generalPasteboard()
+				let pboard = NSPasteboard.general()
 				QiniuUpload(pboard)
 			case UInt32(kVK_ANSI_M):
 				if linkType == 0 {
 					linkType = 1
-					NSNotificationCenter.defaultCenter().postNotificationName("MarkdownState", object: 1)
+					NotificationCenter.default.post(name: Notification.Name(rawValue: "MarkdownState"), object: 1)
 					guard let imagesCache = imagesCacheArr.last else {
 						return 33
 					}
-					NSPasteboard.generalPasteboard().clearContents()
+					NSPasteboard.general().clearContents()
 					let picUrl = imagesCache["url"] as! String
-					NSPasteboard.generalPasteboard().setString(picUrl, forType: NSStringPboardType)
+					NSPasteboard.general().setString(picUrl, forType: NSStringPboardType)
 					
 				}
 				else {
 					linkType = 0
-					NSNotificationCenter.defaultCenter().postNotificationName("MarkdownState", object: 0)
+					NotificationCenter.default.post(name: Notification.Name(rawValue: "MarkdownState"), object: 0)
 					guard let imagesCache = imagesCacheArr.last else {
 						return 33
 					}
-					NSPasteboard.generalPasteboard().clearContents()
+					NSPasteboard.general().clearContents()
 					var picUrl = imagesCache["url"] as! String
 					let fileName = NSString(string: picUrl).lastPathComponent
 					picUrl = "![" + fileName + "](" + picUrl + ")"
-					NSPasteboard.generalPasteboard().setString(picUrl, forType: NSStringPboardType)
+					NSPasteboard.general().setString(picUrl, forType: NSStringPboardType)
 				}
 			default:
 				break

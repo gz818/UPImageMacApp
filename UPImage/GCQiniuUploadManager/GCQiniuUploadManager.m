@@ -12,7 +12,7 @@
 #import <CommonCrypto/CommonCryptor.h>
 #import <CommonCrypto/CommonDigest.h>
 #import "QN_GTM_Base64.h"
-#import "QiniuSDK.h"
+//#import "QiniuSDK.h"
 
 static NSInteger defaultLiveTime = 5;
 static NSString *QiNiuHost = @"host";
@@ -36,12 +36,14 @@ static NSString *QiNiuHost = @"host";
 }
 
 - (void)registerWithScope:(NSString *)scrop
+               serverZone:(NSInteger)serverZone
                 accessKey:(NSString *)accessKey
                 secretKey:(NSString *)secretKey {
-    [self registerWithScope:scrop accessKey:accessKey secretKey:secretKey liveTime:defaultLiveTime];
+    [self registerWithScope:scrop serverZone:serverZone accessKey:accessKey secretKey:secretKey liveTime:defaultLiveTime];
 }
 
 - (void)registerWithScope:(NSString *)scrop
+               serverZone:(NSInteger)serverZone
                 accessKey:(NSString *)accessKey
                 secretKey:(NSString *)secretKey
                  liveTime:(NSInteger)liveTime {
@@ -49,6 +51,34 @@ static NSString *QiNiuHost = @"host";
     self.accessKey = accessKey;
     self.secretKey = secretKey;
     self.liveTime = liveTime;
+    self.serverZone = serverZone;
+    
+    QNZone *  qnZone ;
+    switch (self.serverZone) {
+        case kServerZone_EastChina:
+            qnZone = [QNZone zone0];
+            break;
+        case kServerZone_NouthChina:
+            qnZone = [QNZone zone1];
+            break;
+        case kServerZone_SouthChina:
+            qnZone = [QNZone zone2];
+            break;
+        case kServerZone_NorthAmerica:
+            qnZone = [QNZone zoneNa0];
+            break;
+            
+        default:
+            qnZone = [QNZone zone1];
+            break;
+    }
+    //    //强行用block 。。。。。。
+    QNConfiguration * config = [QNConfiguration build:^(QNConfigurationBuilder *builder) {
+        builder.zone = qnZone;
+    }];
+    
+    _manager = [[QNUploadManager alloc] initWithConfiguration:config];
+    
 }
 
 - (void)createToken {
@@ -103,8 +133,9 @@ static NSString *QiNiuHost = @"host";
 - (void)uploadData:(NSData *)data
           progress:(UploadProgressHandler)progress
         completion:(UploadDataCompletion)completion {
-    QNUploadManager *manager = [[QNUploadManager alloc] init];
-    [manager putData:data
+//    QNUploadManager *manager = [[QNUploadManager alloc] init];
+
+    [_manager putData:data
                  key:nil
                token:self.uploadToken
             complete:^(QNResponseInfo *info, NSString *key, NSDictionary *resp) {

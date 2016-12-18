@@ -1,4 +1,6 @@
+#ifdef __OBJC__
 #import <Cocoa/Cocoa.h>
+#endif
 
 #import "QNALAssetFile.h"
 #import "QNAsyncRun.h"
@@ -13,7 +15,6 @@
 #import "QNVersion.h"
 #import "QN_GTM_Base64.h"
 #import "QNHttpDelegate.h"
-#import "QNHttpManager.h"
 #import "QNResponseInfo.h"
 #import "QNSessionManager.h"
 #import "QNUserAgent.h"

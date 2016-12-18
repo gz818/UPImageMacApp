@@ -7,17 +7,32 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <Qiniu/QiniuSDK.h>
 
 typedef void (^UploadProgressHandler)(float percent);
 typedef void (^UploadDataCompletion)(NSError *error, NSString *link, NSInteger index);
 typedef void (^UploadAllTasksCompletion)();
-
+typedef NS_ENUM(NSInteger , kServerZone){
+    kServerZone_None = -1,
+    kServerZone_EastChina ,
+    kServerZone_NouthChina,
+    kServerZone_SouthChina ,
+    kServerZone_NorthAmerica,
+};
 @interface GCQiniuUploadManager : NSObject
+
+@property (nonatomic , strong) QNUploadManager * manager;
 
 /**
  *  工作空间名称
  */
 @property (nonatomic, strong) NSString *scope;
+
+/**
+ *  服务器地区
+ */
+@property (nonatomic, assign) kServerZone serverZone;
+                                                      
 /**
  *  accessKey，可在七牛的密钥管理里查看
  */
@@ -38,10 +53,12 @@ typedef void (^UploadAllTasksCompletion)();
 + (instancetype)sharedInstance;
 
 - (void)registerWithScope:(NSString *)scrop
+               serverZone:(NSInteger)serverZone
                 accessKey:(NSString *)accessKey
                 secretKey:(NSString *)secretKey;
 
 - (void)registerWithScope:(NSString *)scrop
+               serverZone:(NSInteger)serverZone
                 accessKey:(NSString *)accessKey
                 secretKey:(NSString *)secretKey
                  liveTime:(NSInteger)liveTime;

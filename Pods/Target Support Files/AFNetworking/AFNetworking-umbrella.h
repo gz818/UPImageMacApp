@@ -1,9 +1,8 @@
+#ifdef __OBJC__
 #import <Cocoa/Cocoa.h>
+#endif
 
 #import "AFNetworking.h"
-#import "AFURLConnectionOperation.h"
-#import "AFHTTPRequestOperation.h"
-#import "AFHTTPRequestOperationManager.h"
 #import "AFHTTPSessionManager.h"
 #import "AFURLSessionManager.h"
 #import "AFNetworkReachabilityManager.h"
