@@ -22,8 +22,10 @@ https://github.com/chenxtdo/UPImageMacApp
 
 ## 修复的bug
 > 欢迎issue
-# 历史
+
 -----
+# 历史
+
 ### 修改项目（没有技术含量）
 
 1. 支持QQ截图 和 系统截图（CTRL + CMD + 4）
