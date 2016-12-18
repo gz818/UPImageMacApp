@@ -9,7 +9,7 @@ https://github.com/chenxtdo/UPImageMacApp
 一张图
 ![201612187198620161218148203151941359.png](http://oet7vjedr.bkt.clouddn.com/201612187198620161218148203151941359.png)
 # 版本
-## V0.2
+## V1.1.0
 ## 修改项目
 
 1. 支持 系统截图（CTRL + CMD + 4）和 QQ截图（CMD + CTRL + A）等截图工具
